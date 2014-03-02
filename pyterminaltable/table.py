@@ -91,6 +91,16 @@ class table(base_object):
         elif newseparator:
             self.rows.append(newseparator)
 
+    def get_more_columns(self):
+        columns = 0
+
+        for r in self.rows:
+            c = len(r.columns)
+            if c > columns:
+                columns = c
+
+        return columns
+
     def clean(self):
     	self.rows = []
     	self.head = None
@@ -111,7 +121,15 @@ class table(base_object):
     def width(self):
         # Start with borders
         width = 2
-        columns = len(self.get_head().columns)
+        
+        # See if has head for count columns or take
+        # the row with more columns
+        head = self.get_head()
+        if head:
+            columns = len(head.columns)
+        else:
+            columns = self.get_more_columns()
+
         # Add left border columns and spaces
         width += columns * 2
 
@@ -160,7 +178,11 @@ class row(base_object):
     def draw(self, table = None):
         if table:
             use = table
-            stop = len(table.get_head().columns)
+            head = table.get_head()
+            if head:
+                stop = len(head.columns)
+            else:
+                head = None
         else:
             use = self
             stop = len(self.columns)
@@ -173,7 +195,7 @@ class row(base_object):
 
             x += 1
             # If have more columns than head ignore the rest
-            if x >= stop:
+            if head and x >= stop:
                 break
 
         draw = use.chr_vertical + draw + use.chr_vertical

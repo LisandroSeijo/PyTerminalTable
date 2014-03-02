@@ -86,6 +86,13 @@ class base_object(object):
 
         return text
 
+    def get_clean_text(self, text):
+        for k, v in colors.iteritems():
+            text = text.replace(v, '')
+        text = text.replace('\x1b[0m', '')
+        
+        return text
+
     def get_chr_vertical(self):
         char = self.chr_vertical
         
@@ -237,9 +244,9 @@ class row(base_object):
         text = ''
         # We must add spaces to complete the line
         if not self.table:
-            step = ' ' * (self.width_column(column) - len(self.get_column(column)))
+            step = ' ' * (self.width_column(column) - len(self.get_clean_text(self.get_column(column))))
         else:
-            step = ' ' * (self.table.width_column(column) - len(self.get_column(column)))
+            step = ' ' * (self.table.width_column(column) - len(self.get_clean_text(self.get_column(column))))
         
         # If is the second column or more add a separator character
         if column > 0:
@@ -283,7 +290,7 @@ class row(base_object):
 
     def width_column(self, num_column):
         try:
-            return len(self.columns[num_column]) + 1
+            return len(self.get_clean_text(self.columns[num_column])) + 1
         except:
             return 0
 

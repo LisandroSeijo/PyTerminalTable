@@ -197,13 +197,13 @@ class row(base_object):
         draw = ''
         for x in range(stop):
             draw += self.str_column(x, use)
-        
+
         print use.chr_vertical + draw + use.chr_vertical
 
     def width(self):
         width = 0
         columns = len(self.columns)
-        # Add left border columns and spaces
+        # Add left border columns
         width += columns
 
         for x in range(columns):

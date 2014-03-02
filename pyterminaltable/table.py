@@ -32,6 +32,8 @@ class base_object(object):
         self.color_text = None
         # Horizonal line color
         self.color_line = None
+        # Vertical line color
+        self.color_vertical = None
 
     def set_color(self, color):
         self.color = color
@@ -41,6 +43,9 @@ class base_object(object):
 
     def set_color_line(self, color):
         self.color_line = color
+
+    def set_color_vertical(self, color):
+        self.color_vertical = color
 
     def draw_line(self):
         line = self.chr_horizontal * self.width()
@@ -63,6 +68,17 @@ class base_object(object):
             text = color(self.color, text)
 
         return text
+
+    def get_chr_vertical(self):
+        char = self.chr_vertical
+        
+        if self.color_vertical:
+            char = color(self.color_vertical, char)
+        elif self.color:
+            char = color(self.color, char)
+
+        return char
+
 
 class table(base_object):
     def __init__(self):
@@ -228,7 +244,7 @@ class row(base_object):
         for x in range(stop):
             draw += self.str_column(x)
 
-        print self.use.chr_vertical + draw + self.use.chr_vertical
+        print self.use.get_chr_vertical() + draw + self.use.get_chr_vertical()
 
     def width(self):
         width = 0

@@ -158,6 +158,11 @@ class row(base_object):
     def __init__(self, data):
         super(row, self).__init__()
         self.columns = data
+    
+    def get_column(self, column):
+        if column >= len(self.columns):
+            return ''
+        return self.columns[column]
 
     def str_column(self, column, use):
         '''
@@ -165,7 +170,7 @@ class row(base_object):
         '''
         text = ''
         # We must add spaces to complete the line
-        step = ' ' * (use.width_column(column) - len(self.columns[column]))
+        step = ' ' * (use.width_column(column) - len(self.get_column(column)))
         
         # If is the second column or more add a separator character
         if column > 0:
@@ -173,33 +178,27 @@ class row(base_object):
         else:
             step += ' '
 
-        return text + ' ' + use.get_text(self.columns[column]) + step
+        return text + ' ' + use.get_text(self.get_column(column)) + step
 
     def draw(self, table = None):
+        # use table attributes
         if table:
             use = table
             head = table.get_head()
             if head:
                 stop = len(head.columns)
             else:
-                head = None
+                stop = table.get_more_columns()
+        # use row attributes
         else:
             use = self
             stop = len(self.columns)
         
         draw = ''
-        
-        x = 0
-        for column in self.columns:
+        for x in range(stop):
             draw += self.str_column(x, use)
-
-            x += 1
-            # If have more columns than head ignore the rest
-            if head and x >= stop:
-                break
-
-        draw = use.chr_vertical + draw + use.chr_vertical
-        print draw
+        
+        print use.chr_vertical + draw + use.chr_vertical
 
     def width(self):
         width = 0

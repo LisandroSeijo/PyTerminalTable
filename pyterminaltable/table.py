@@ -163,6 +163,9 @@ class row(base_object):
         super(row, self).__init__()
         self.columns = data
     
+    def add_column(self, column):
+        self.columns.append(column)
+
     def get_column(self, column):
         if column >= len(self.columns):
             return ''

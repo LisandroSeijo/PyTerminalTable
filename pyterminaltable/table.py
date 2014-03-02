@@ -37,6 +37,18 @@ class base_object(object):
         # Column separator color
         self.color_separator = None
 
+    def set_colors(self, **kwargs):
+        # General color
+        self.color = kwargs.get('color', self.color)
+        # Text color
+        self.color_text = kwargs.get('text', self.color_text)
+        # Horizonal line color
+        self.color_line = kwargs.get('line', self.color_line)
+        # Vertical line color
+        self.color_vertical = kwargs.get('vertical', self.color_vertical)
+        # Column separator color
+        self.color_separator = kwargs.get('separator', self.color_separator)
+
     def set_color(self, color):
         self.color = color
 

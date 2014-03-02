@@ -166,7 +166,7 @@ class table(base_object):
 
     def width(self):
         # Start with borders
-        width = 2
+        width = 1
         
         # See if has head for count columns or take
         # the row with more columns
@@ -244,8 +244,6 @@ class row(base_object):
         # If is the second column or more add a separator character
         if column > 0:
             text = self.use.get_separator()
-        else:
-            step += ' '
 
         return text + ' ' + self.use.get_text(self.get_column(column)) + step
 
@@ -273,10 +271,10 @@ class row(base_object):
         print self.use.get_chr_vertical() + draw + self.use.get_chr_vertical()
 
     def width(self):
-        width = 0
+        width = 1
         columns = len(self.columns)
         # Add left border columns
-        width += columns
+        width += columns * 2
 
         for x in range(columns):
             width += self.width_column(x)
@@ -293,13 +291,14 @@ class head(row):
     def __init__(self, data = None):
         super(head, self).__init__(data)
 
-    def draw(self, table):
+    def draw(self, table = None):
+        dl = table if table else self
         # Draw top line
-        table.draw_line()
+        dl.draw_line()
         # Draw row
         super(head, self).draw(table)
         # Draw button line
-        table.draw_line()
+        dl.draw_line()
 
 class separator(head):
     def __init__(self, data = None):

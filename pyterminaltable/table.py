@@ -20,11 +20,17 @@ def color(selcolor, text):
 
 class base_object(object):
     def __init__(self):
+        # Horizonal line character
         self.chr_horizontal = '*'
+        # Vertical line character
         self.chr_vertical = '|'
+        # Separator columns character
         self.chr_separator = '|'
+        # General color
         self.color = None
+        # Text color
         self.color_text = None
+        # Horizonal line color
         self.color_line = None
 
     def set_color(self, color):
@@ -103,8 +109,6 @@ class table(base_object):
 
     def clean(self):
     	self.rows = []
-    	self.head = None
-
 
     def width_column(self, num_column):
         width = 0
@@ -181,7 +185,7 @@ class row(base_object):
         return text + ' ' + use.get_text(self.get_column(column)) + step
 
     def draw(self, table = None):
-        # use table attributes
+        # Use table attributes
         if table:
             use = table
             head = table.get_head()
@@ -189,7 +193,7 @@ class row(base_object):
                 stop = len(head.columns)
             else:
                 stop = table.get_more_columns()
-        # use row attributes
+        # Use row attributes
         else:
             use = self
             stop = len(self.columns)

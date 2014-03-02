@@ -34,6 +34,8 @@ class base_object(object):
         self.color_line = None
         # Vertical line color
         self.color_vertical = None
+        # Column separator color
+        self.color_separator = None
 
     def set_color(self, color):
         self.color = color
@@ -46,6 +48,9 @@ class base_object(object):
 
     def set_color_vertical(self, color):
         self.color_vertical = color
+
+    def set_color_separator(self, color):
+        self.color_separator = color
 
     def draw_line(self):
         line = self.chr_horizontal * self.width()
@@ -79,6 +84,15 @@ class base_object(object):
 
         return char
 
+    def get_separator(self):
+        char = self.chr_separator
+
+        if self.color_separator:
+            char = color(self.color_separator, char)
+        elif self.color:
+            char = color(self.color, char)
+
+        return char
 
 class table(base_object):
     def __init__(self):
@@ -217,7 +231,7 @@ class row(base_object):
         
         # If is the second column or more add a separator character
         if column > 0:
-            text = self.use.chr_separator
+            text = self.use.get_separator()
         else:
             step += ' '
 

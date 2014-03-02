@@ -159,10 +159,27 @@ class table(base_object):
         self.draw_line()
 
 class row(base_object):
-    def __init__(self, data):
+    def __init__(self, data = None):
         super(row, self).__init__()
-        self.columns = data
+        if data:
+            self.columns = data
+        else:
+            self.columns = []
+
+        self.use = self
+        self.was_set_use = False
     
+    def use_attr(self, use):
+        self.use = use
+        self.was_set_use = True
+
+    def useme(self):
+        self.use = self
+        self.was_set_use = True
+    
+    def set_columns(self, data):
+        self.columns = data
+
     def add_column(self, column):
         self.columns.append(column)
 
@@ -171,41 +188,47 @@ class row(base_object):
             return ''
         return self.columns[column]
 
-    def str_column(self, column, use):
+    def str_column(self, column):
         '''
         Return a string with the column
         '''
         text = ''
         # We must add spaces to complete the line
-        step = ' ' * (use.width_column(column) - len(self.get_column(column)))
+        if not self.table:
+            step = ' ' * (self.width_column(column) - len(self.get_column(column)))
+        else:
+            step = ' ' * (self.table.width_column(column) - len(self.get_column(column)))
         
         # If is the second column or more add a separator character
         if column > 0:
-            text = use.chr_separator
+            text = self.use.chr_separator
         else:
             step += ' '
 
-        return text + ' ' + use.get_text(self.get_column(column)) + step
+        return text + ' ' + self.use.get_text(self.get_column(column)) + step
 
     def draw(self, table = None):
-        # Use table attributes
+        # Is drawing a table
         if table:
-            use = table
+            self.table = table
+            # If use was not set, use table
+            if not self.was_set_use:
+                self.use = table
             head = table.get_head()
             if head:
                 stop = len(head.columns)
             else:
                 stop = table.get_more_columns()
-        # Use row attributes
+        # Is drawing only this row
         else:
-            use = self
+            self.table = None
             stop = len(self.columns)
         
         draw = ''
         for x in range(stop):
-            draw += self.str_column(x, use)
+            draw += self.str_column(x)
 
-        print use.chr_vertical + draw + use.chr_vertical
+        print self.use.chr_vertical + draw + self.use.chr_vertical
 
     def width(self):
         width = 0
@@ -225,7 +248,7 @@ class row(base_object):
             return 0
 
 class head(row):
-    def __init__(self, data):
+    def __init__(self, data = None):
         super(head, self).__init__(data)
 
     def draw(self, table):
@@ -237,5 +260,5 @@ class head(row):
         table.draw_line()
 
 class separator(head):
-    def __init__(self, data):
+    def __init__(self, data = None):
         super(head, self).__init__(data)

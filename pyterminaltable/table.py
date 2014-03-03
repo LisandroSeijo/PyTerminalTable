@@ -239,11 +239,9 @@ class table(base_object):
 class row(base_object):
     def __init__(self, data = None):
         super(row, self).__init__()
+        self.columns = []
         if data:
-            self.columns = data
-        else:
-            self.columns = []
-
+            self.set_columns(data)
         self.use = self
         self.was_set_use = False
     
@@ -256,10 +254,11 @@ class row(base_object):
         self.was_set_use = True
     
     def set_columns(self, data):
-        self.columns = data
+        for c in data:
+            self.columns.append(str(c))
 
     def add_column(self, column):
-        self.columns.append(column)
+        self.columns.append(str(column))
 
     def get_column(self, column):
         if column >= len(self.columns):

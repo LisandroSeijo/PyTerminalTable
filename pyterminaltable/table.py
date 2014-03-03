@@ -214,7 +214,7 @@ class table(base_object):
             return
         
         for x in range(len(headc.columns)):
-            if headc.get_clean_text(headc.get_column(x)) == value:
+            if headc.get_clean_column(x) == value:
                 ret = x
                 break
         
@@ -264,6 +264,9 @@ class row(base_object):
         if column >= len(self.columns):
             return ''
         return self.columns[column]
+    
+    def get_clean_column(self, column):
+        return self.get_clean_text(self.get_column(column))
 
     def str_column(self, column):
         '''
@@ -272,9 +275,9 @@ class row(base_object):
         text = ''
         # We must add spaces to complete the line
         if not self.table:
-            step = ' ' * (self.width_column(column) - len(self.get_clean_text(self.get_column(column))))
+            step = ' ' * (self.width_column(column) - len(self.get_clean_column(column)))
         else:
-            step = ' ' * (self.table.width_column(column) - len(self.get_clean_text(self.get_column(column))))
+            step = ' ' * (self.table.width_column(column) - len(self.get_clean_column(column)))
         
         # If is the second column or more add a separator character
         if column > 0:
@@ -318,7 +321,7 @@ class row(base_object):
 
     def width_column(self, num_column):
         try:
-            return len(self.get_clean_text(self.columns[num_column])) + 1
+            return len(self.get_clean_column(num_column)) + 1
         except:
             return 0
 

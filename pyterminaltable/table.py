@@ -157,7 +157,7 @@ class table(base_object):
         return columns
 
     def clean(self):
-    	self.rows = []
+        self.rows = []
 
     def width_column(self, num_column):
         width = 0
@@ -190,6 +190,35 @@ class table(base_object):
             width += self.width_column(x)
         
         return width
+    
+    def sort_asc(self, value):
+        if type(value) is str:
+            value = self.get_index_column(value)
+            if value is False:
+                return
+
+        self.rows.sort(key = lambda r: r.get_column(value))
+
+    def sort_desc(self, value):
+        if type(value) is str:
+            value = self.get_index_column(value)
+            if value is False:
+                return
+        
+        self.rows.sort(key = lambda r: r.get_column(value), reverse = True)
+
+    def get_index_column(self, value):
+        ret = False
+        headc = self.get_head()
+        if not headc:
+            return
+        
+        for x in range(len(headc.columns)):
+            if headc.get_clean_text(headc.get_column(x)) == value:
+                ret = x
+                break
+        
+        return ret
 
     def draw(self):
         # Draw head if has

@@ -21,7 +21,7 @@ def color(selcolor, text):
 class base_object(object):
     def __init__(self):
         # Horizonal line character
-        self.chr_horizontal = '*'
+        self.chr_horizontal = '='
         # Vertical line character
         self.chr_vertical = '|'
         # Separator columns character
@@ -103,6 +103,16 @@ class base_object(object):
 
         return char
 
+    def get_chr_horizontal(self):
+        char = self.chr_horizontal
+        
+        if self.color_line:
+            char = color(self.color_line, char)
+        elif self.color:
+            char = color(self.color, char)
+
+        return char
+
     def get_separator(self):
         char = self.chr_separator
 
@@ -118,11 +128,11 @@ class table(base_object):
         super(table, self).__init__()
         self.rows = []
 
-    def add_head(self, data = None, newhead = None):
-        if data:
+    def add_head(self, data):
+        if type(data) is list:
             self.rows.append(head(data))
-        elif newhead:
-            self.rows.append(newhead)
+        elif type(data) is head:
+            self.rows.append(data)
 
     def get_head(self):
         ret = None
@@ -134,11 +144,11 @@ class table(base_object):
 
         return ret
 
-    def add_row(self, data = None, newrow = None):
-        if data:
+    def add_row(self, data):
+        if type(data) is list:
             self.rows.append(row(data))
-        elif newrow:
-            self.rows.append(newrow)
+        elif type(data) is row:
+            self.rows.append(data)
 
     def add_separator(self, data = None, newseparator = None):
         if data:
@@ -173,7 +183,7 @@ class table(base_object):
 
     def width(self):
         # Start with borders
-        width = 1
+        width = len(self.chr_vertical)
         
         # See if has head for count columns or take
         # the row with more columns
@@ -184,28 +194,33 @@ class table(base_object):
             columns = self.get_more_columns()
 
         # Add left border columns and spaces
-        width += columns * 2
+        width += (len(self.chr_separator) * columns) + columns
 
         for x in range(columns):
             width += self.width_column(x)
         
         return width
-    
-    def sort_asc(self, value):
-        if type(value) is str:
-            value = self.get_index_column(value)
-            if value is False:
+
+    def sort(self, column, desc = False):
+        if type(column) is str:
+            column = self.get_index_column(column)
+            if column is False:
                 return
 
-        self.rows.sort(key = lambda r: r.get_column(value))
+        try:
+            self.rows.sort(
+                key = lambda r: int(r.get_clean_column(column)) if not type(r) is head else 0, 
+                reverse = desc)
+        except Exception:
+            self.rows.sort(
+                key = lambda r: r.get_clean_column(column), 
+                reverse = desc)
 
-    def sort_desc(self, value):
-        if type(value) is str:
-            value = self.get_index_column(value)
-            if value is False:
-                return
-        
-        self.rows.sort(key = lambda r: r.get_column(value), reverse = True)
+    def sort_asc(self, column):
+        self.sort(column, False)
+
+    def sort_desc(self, column):
+        self.sort(column, True)
 
     def get_index_column(self, value):
         ret = False
@@ -312,7 +327,7 @@ class row(base_object):
         width = 1
         columns = len(self.columns)
         # Add left border columns
-        width += columns * 2
+        width += (len(self.chr_separator) * columns) + columns
 
         for x in range(columns):
             width += self.width_column(x)
@@ -330,13 +345,17 @@ class head(row):
         super(head, self).__init__(data)
 
     def draw(self, table = None):
-        dl = table if table else self
+        if table:
+            if not self.was_set_use:
+                line = table.get_chr_horizontal() * table.width()
+            else:
+                line = self.use.get_chr_horizontal() * table.width()
         # Draw top line
-        dl.draw_line()
+        print line
         # Draw row
         super(head, self).draw(table)
         # Draw button line
-        dl.draw_line()
+        print line
 
 class separator(head):
     def __init__(self, data = None):

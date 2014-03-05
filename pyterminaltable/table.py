@@ -16,7 +16,7 @@ def color(selcolor, text):
     color = colors.get(selcolor, None)
     if not color:
         return text
-    return color + text + '\x1b[0m'
+    return color+text+'\x1b[0m'
 
 class base_object(object):
     def __init__(self):
@@ -129,28 +129,28 @@ class table(base_object):
         self.rows = []
 
     def add_head(self, data):
-        if type(data) is list:
+        if isinstance(data, list):
             self.rows.append(head(data))
-        elif type(data) is head:
+        elif isinstance(data, head):
             self.rows.append(data)
 
     def get_head(self):
         ret = None
 
         for r in self.rows:
-            if type(r) is head:
+            if isinstance(r, head):
                 ret = r
                 break
 
         return ret
 
     def add_row(self, data):
-        if type(data) is list:
+        if isinstance(data, list):
             self.rows.append(row(data))
-        elif type(data) is row:
+        elif isinstance(data, row):
             self.rows.append(data)
 
-    def add_separator(self, data = None, newseparator = None):
+    def add_separator(self, data=None, newseparator=None):
         if data:
             self.rows.append(separator(data))
         elif newseparator:
@@ -201,15 +201,15 @@ class table(base_object):
         
         return width
 
-    def sort(self, column, desc = False):
-        if type(column) is str:
+    def sort(self, column, desc=False):
+        if isinstance(column, str):
             column = self.get_index_column(column)
             if column is False:
                 return
 
         try:
             self.rows.sort(
-                key = lambda r: int(r.get_clean_column(column)) if not type(r) is head else 0, 
+                key = lambda r: int(r.get_clean_column(column)) if not isinstance(r, head) else 0, 
                 reverse = desc)
         except Exception:
             self.rows.sort(
@@ -237,22 +237,23 @@ class table(base_object):
 
     def draw(self):
         # Draw head if has
-        head = self.get_head()
-        if head:
-            head.draw(self)
+        h = self.get_head()
+        if h:
+            h.draw(self)
         else:
             self.draw_line()
 
         # Draw all rows
         for r in self.rows:
-            if type(r) is row or type(r) is separator:
-                r.draw(self)
+            if isinstance(r, head):
+                continue
+            r.draw(self)
         
         # Draw button line
         self.draw_line()
 
 class row(base_object):
-    def __init__(self, data = None):
+    def __init__(self, data=None):
         super(row, self).__init__()
         self.columns = []
         if data:
@@ -300,7 +301,7 @@ class row(base_object):
 
         return text + ' ' + self.use.get_text(self.get_column(column)) + step
 
-    def draw(self, table = None):
+    def draw(self, table=None):
         # Is drawing a table
         if table:
             self.table = table
@@ -341,7 +342,7 @@ class row(base_object):
             return 0
 
 class head(row):
-    def __init__(self, data = None):
+    def __init__(self, data=None):
         super(head, self).__init__(data)
 
     def draw(self, table = None):
@@ -358,5 +359,5 @@ class head(row):
         print line
 
 class separator(head):
-    def __init__(self, data = None):
+    def __init__(self, data=None):
         super(head, self).__init__(data)

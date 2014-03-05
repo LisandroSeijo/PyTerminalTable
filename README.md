@@ -76,7 +76,7 @@ And we have (in blue):
 {} Beto      [] Acosta     [] example@example.com  {}
 *****************************************************
 ```
-To print with color, is used a function named color(), you can use this in any item of the list for print a unique column with color:
+To print with color, is used a function named color(), you can use this in any item of the list to print a unique column with color:
 ```python
 t.add_row(['row 1', 'row 2', table.color('red', 'row 3')])
 t.add_row(['row 1', table.color('green', 'row 2'), 'row 3'])
@@ -180,7 +180,7 @@ t.draw()
 ```
 
 ######Using prototypes:
-Sometimes for any reason we must use the same style depending of an attribute or any condition. For that its more easy first create prototype rows with the style and then assign calling the method use_attr().
+Sometimes for any reason we must use the same style depending of an attribute or any condition. For that its easier to create first prototype rows with the style and then assign calling the method use_attr().
 ```python
 data = [
    ['Dog', 'Droopy', 10],

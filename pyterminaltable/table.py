@@ -18,7 +18,7 @@ def color(selcolor, text):
         return text
     return color+text+'\x1b[0m'
 
-class base_object(object):
+class base_table(object):
     def __init__(self):
         # Horizonal line character
         self.chr_horizontal = '='
@@ -123,7 +123,7 @@ class base_object(object):
 
         return char
 
-class table(base_object):
+class table(base_table):
     def __init__(self):
         super(table, self).__init__()
         self.rows = []
@@ -252,7 +252,7 @@ class table(base_object):
         # Draw button line
         self.draw_line()
 
-class row(base_object):
+class row(base_table):
     def __init__(self, data=None):
         super(row, self).__init__()
         self.columns = []
@@ -345,7 +345,7 @@ class head(row):
     def __init__(self, data=None):
         super(head, self).__init__(data)
 
-    def draw(self, table = None):
+    def draw(self, table=None):
         if table:
             if not self.was_set_use:
                 line = table.get_chr_horizontal() * table.width()

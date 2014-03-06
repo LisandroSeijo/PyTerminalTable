@@ -290,15 +290,43 @@ Order by serie's name asc
 * sort_desc(column)
 * sort_asc(column)
 
-Others
+More
 ======
-Table, row and head methods:
+###### Table, row and head methods:
+* set_colors(color, text, line, vertical, separator)
+* set_color(color)
+* set_color_text(color)
+* set_color_line(color)
+* set_color_vertical(color)
+* set_color_separator(color)
+* get_text(text)
+* get_clean_text(text)
+* get_chr_vertical()
+* get_chr_horizontal()
+* get_separator()
 * draw(): print the table or row
 * draw_line(): draw a line
 * width(): return the width
 * width_column(num_column): return the width of a specific column by index
 
-[See complete list of class, methods and attributes](https://github.com/LisandroSeijo/PyTerminalTable/wiki)
+###### Table methods:
+* add_head(data)
+* add_row(data)
+* get_head()
+* get_more_columns()
+* get_index_column(value)
+* sort(column, desc = False)
+* sort_asc(column)
+* sort_desc(column)
+* clean()
+
+###### Row and head methods:
+* set_columns(data)
+* get_column(column)
+* add_column(column)
+* str_column(column)
+* useme()
+* use_attr(use)
 
 Licence
 =======
